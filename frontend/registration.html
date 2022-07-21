@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <script src="./js/web3.js"></script>
+
+    <link rel="stylesheet" href="./bs/bs.css">
+    <script src="./bs/popper.js"></script>
+    <script src="./bs/bs.js"></script>
+
+
+    <script src="./js/jq.js"></script>
+    <style>
+        .heading {
+            border: 2px solid;
+            width: 700px;
+            min-height: 500px;
+            height: auto;
+            margin: 2% 30%;
+            text-align: center;
+
+        }
+
+        .in {
+            font-size: 20px;
+            margin: 1%;
+            width: 450px;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="heading">
+        <h1 class="text-center">Registration page</h1>
+
+        <img src="./images/img.png" style="border-radius: 50%; width: 40%; margin: 5% 10%;" alt="">
+
+        <br>
+        <table style="margin:1% 10% ; ">
+
+            <tr>
+                <th>Address</th>
+                <td><input class="in" type="text" id="address" value="0x71d11d6fe93437c3eedf30f44a4e4f4991d5dc3b"></td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td><input class="in" type="text" id="name" value="Ajit"></td>
+            </tr>
+            <tr>
+                <th>Aadhar</th>
+                <td><input class="in" type="text" size="12" id="aadhar" value="123412341234"></td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td> <input class="in" type="password" id="pass" value="pass"></td>
+            </tr>
+
+            <td><input class="in" type="text" id="role" hidden value="1"></td>
+
+
+        </table>
+        <br>
+        <button class="go btn btn-success my-2" onclick="create()" > Register </button>
+        
+    </div>
+
+
+    </div>
+
+</body>
+<script src="./js/config.js"></script>
+<script>
+    const session = myContract;
+       function create() {
+        let senderAdd = $("#address").val();
+        let name = $("#name").val();
+        let aadh = $("#aadhar").val();
+        let password = $("#pass").val();
+        let role = $("#role").val();
+
+        console.log(senderAdd + aadh + password + role + Number(aadh));
+
+        session.methods.createVoter(senderAdd, name, Number(aadh), role, password)
+            .send({ from: defaultAccount, gas: '300000' }).then(() => {
+                // alert("Created");
+                alert("Registration Successful");
+                window.location.replace("http://127.0.0.1:5500/frontend/login.html");
+            });
+    }
+</script>
+
+</html>

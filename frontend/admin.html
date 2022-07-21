@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <script src="./js/web3.js"></script>
+
+    <script src="./js/jq.js"></script>
+    <link rel="icon" href="./images/iconadmin.png">
+
+    <link rel="stylesheet" href="./bs/bs.css">
+    <script src="./bs/popper.js"></script>
+    <script src="./bs/bs.js"></script>
+   
+
+    <style>
+        .heading {
+            border: 2px solid;
+            width: 800px;
+            min-height: 500px;
+            margin: 5% 30%;
+            text-align: center;
+        }
+        #ress{
+            border: 2px solid;
+            width: fit-content;
+            margin: 5% 30%;
+            text-align: center;   
+        }
+
+        .image {
+            width: 40%;
+            border-radius: 50%;
+        }
+
+        .parent {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            border: 2px solid;
+            /* border-radius: 2%; */
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">XVote</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="admin.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn" href="voter.html">Vote</a>
+                </li>
+            </ul>
+            <div class="my-2">
+                <span id="greet" class="btn btn-outline-dark"></span>
+                <button class=" btn btn-danger" id="logout">logout</button>
+            </div>
+        </div>
+
+    </nav>
+
+
+    <div class="heading">
+        <div id="status">
+        </div>
+        <h1 id="status" style="margin: 0.5%;"> </h1>
+
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="container">
+                    <img class="image" src="./images/addUser.png" alt="">
+                    <button class="btn btn-outline-primary" id="register">Register User</button>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="container">
+                    <img class="image" src="./images/disablE.jpg" alt="">
+                    <button id="disable" class="btn btn-outline-danger">Disable User</button>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="container">
+                    <img class="image" src="./images/start.png" alt="">
+                    <button id="start" class="btn btn-success">Start Voting</button>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="container">
+                    <img class="image" src="./images/finish.png" alt="">
+                    <button id="end" class="btn btn-secondary">End Voting</button>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="container">
+                    <img class="image" src="./images/addCan.png" alt="">
+                    <button id="add" class="btn btn-outline-warning">Add Candidate</button>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="container">
+                    <img class="image" src="./images/result2.png" alt="">
+                    <button id="result" class="btn btn-outline-success">Declare Result</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div id="ress">
+
+    </div>
+
+</body>
+<script src="./js/config.js"></script>
+<script>
+    let index, sender, user, role,dataa;
+
+    $(document).ready(() => {
+
+        $("#logout").on("click", (e) => {
+            document.cookie = null;
+            alert("logged out");
+            document.cookie = "index = " + null;
+            document.cookie = "sender = " + null;
+            document.cookie = "role = " + null;
+            // console.log(document.cookie);
+            window.location.replace("http://127.0.0.1:5500/frontend/login.html");
+        });
+
+        // console.log(23);
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+
+        console.log(ca);
+
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            console.log(c);
+            if (c.trim().startsWith("sender")) {
+                sender = c.split("=").pop();
+                console.log(sender);
+            }
+            if (c.trim().startsWith("index")) {
+                index = c.split("=").pop();
+                console.log(index);
+            }
+            if (c.trim().startsWith("role")) {
+                role = Number(c.split("=").pop());
+                console.log(role);
+            }
+        }
+
+
+        if (role === 0) {
+            console.log(12);
+            moveforward();
+        }
+        else {
+            alert("Only for admin !!!!!!!!");
+            window.location = "/frontend/login.html";
+        }
+        $(".btn").on("click", (e) => {
+            if (role != 0) {
+                alert("only for admin !!!!!");
+                window.location = "/frontend/login.html";
+            }
+        });
+
+        $("#register").on("click", (e) => {
+            window.location = "/frontend/registration.html";
+        });
+
+        $("#start").on("click", (e) => {
+            myContract.methods.startVoting(sender).send({ from: defaultAccount })
+                .then(data => {
+                    console.log(data);
+                });
+        });
+
+        $("#end").on("click", (e) => {
+            myContract.methods.finishVoting(sender).send({ from: defaultAccount })
+                .then(data => {
+                    console.log(data);
+                    window.location = "/frontend/admin.html";
+                });
+        })
+        $("#disable").on("click", (e) => {
+            let voterAdd = prompt("enter Voter address");
+            console.log("disabling" + sender);
+            myContract.methods.disable_a_Voter(sender, voterAdd).send({ from: defaultAccount })
+                .then(data => {
+                    console.log(data);
+                });
+
+        });
+
+        $("#add").on("click", (e) => {
+            window.location = "/frontend/addcandidate.html";
+        })
+        $("#result").on("click", (e) => {
+            window.location = "/frontend/result.html";
+
+        })
+
+
+    });
+
+    function moveforward() {
+
+        myContract.methods.ballot().call({ from: sender })
+            .then(data => {
+                if (data.is_voting_started) {
+                    $("#status").html('<h1 style="margin: 0.5%;border:2px solid; color:green;">Voting Started </h1>');
+                } else {
+                    $("#status").html('<h1 style="margin: 0.5%;border:2px solid; color:red;">Voting Ended </h1>');
+                }
+                console.log(data);
+            });
+
+        myContract.methods.voterlist(index).call({ from: sender })
+            .then(userdata => { user = userdata; })
+            .then(() => {
+                $("#greet").text("hello, " + user.name);
+            });
+    }
+
+</script>
+
+</html>

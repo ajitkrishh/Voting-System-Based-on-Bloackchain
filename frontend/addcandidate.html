@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <script src="./js/web3.js"></script>
+
+    <script src="./js/jq.js"></script>
+    <style>
+        .heading {
+            border: 2px solid;
+            width: 700px;
+            min-height: 500px;
+            height: auto;
+            margin: 2% 30%;
+            text-align: center;
+
+        }
+
+        .in {
+            font-size: 20px;
+            margin: 1%;
+            width: 450px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="heading">
+
+        <img src="./images/candidate.png" style="border-radius: 50%; width: 50%; height: 70%; margin: 5% 10%;" alt="">
+
+        <br>
+        <table>
+
+            <tr>
+                <th>Address</th>
+                <td><input class="in" type="text" id="address" value="0x71d11d6fe93437c3eedf30f44a4e4f4991d5dc3b"></td>
+            </tr>
+            <tr>
+                <th>Party Name</th>
+                <td><input class="in" type="text" id="name" value="Ajit"></td>
+            </tr>
+
+        </table>
+        <br>
+        <button class="go" onclick="create()" style="width: 60px;height: 30px;margin: 1%;"> Add </button>
+
+    </div>
+
+
+    </div>
+
+</body>
+<script src="./js/config.js"></script>
+<script>
+    const session = myContract;
+    function create() {
+        let senderAdd = $("#address").val();
+        let name = $("#name").val();
+
+        session.methods.addCandidatetoCandidateList(senderAdd, name)
+            .send({ from: defaultAccount, gas: '300000' }, (err, res) => {
+                if (err) {
+                    let reason = err["data"]["stack"];
+                    reason = reason.split(" revert");
+                    reason = reason[1].substring(0, reason[1].indexOf("\n"));
+                    alert(reason);
+                    return
+                } else {
+
+                    alert("Added successfully");
+                    window.location.replace("http://127.0.0.1:5500/frontend/admin.html");
+                }
+            });
+
+    }
+</script>
+
+</html>

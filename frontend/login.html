@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script> -->
+    <script src="./js/web3.js"></script>
+
+    <script src="./js/jq.js"></script>
+
+    <link rel="stylesheet" href="./bs/bs.css">
+    <script src="./bs/popper.js"></script>
+    <script src="./bs/bs.js"></script>
+
+    <style>
+        
+        .container{
+            width: 70%;
+                text-align: center;
+                border: 2px solid;
+                padding:3% ;
+            }
+</style>
+</head>
+
+<body>
+    <div class="container my-3">
+        <img src="./images/img.png" style="border-radius: 50%; width: 30%; margin: 5% 10%;" alt="">
+        <br>
+        Address : <input type="text" id="address" style="font-size:18px; width: 420px; text-align: center;"
+            placeholder="0x704b164cc1f85f9cb52cec33e771c5a5a4e460f3">
+        <button class="go btn btn-success" onclick="validate()" style="width: 70px;height: 35px;margin: 1%;"> Login
+        </button>
+        <br>
+
+        not registered yet?
+        <a class="btn btn-info btn-sm" href="registration.html">Register</a>
+    </div>
+
+</body>
+<script src="./js/config.js"></script>
+
+</html>
+<script>
+    $("#address").text(defaultAccount);
+    const session = myContract;
+
+    function validate() {
+        let senderAdd = $("#address").val();
+        session.methods.address2index(senderAdd).call({ from: defaultAccount }).
+            then(index => {
+                session.methods.voterlist(index).call({ from: defaultAccount })
+                    .then(data => {
+                        document.cookie = "index = " + index;
+                        document.cookie = "sender = " + senderAdd;
+                        document.cookie = "role = " + data.role;
+                        if (data.role == 1) {
+                            window.location.replace("http://127.0.0.1:5500/frontend/voter.html");
+                        } else {
+                            window.location.replace("http://127.0.0.1:5500/frontend/admin.html");
+
+                        }
+                    })
+            });
+    }
+</script>
+
+</html>
